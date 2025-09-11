@@ -112,35 +112,35 @@ int main() {
     assertEquals(from10(9, 2), 1001L);
     assertEquals(from10(9, 7), 12L);
     assertEquals(from10(15, 8), 17L);
-        assertEquals(from10(100, 3), 10201L);
-        assertEquals(from10(123, 10), 123L);
-        assertEquals(from10(0, 2), 0L);
-        
-        // Test from10(long) hex 
-        assertEquals(from10(13), string("D"));
-        assertEquals(from10(20), string("14"));
-        assertEquals(from10(255), string("FF"));
-        assertEquals(from10(2748), string("ABC"));
-        assertEquals(from10(43981), string("ABCD"));
-        assertEquals(from10(171), string("AB"));
-        
-        // Test to10 
-        assertEquals(to10(1001, 2), 9L);
-        assertEquals(to10(12, 7), 9L);
-        assertEquals(to10(17, 8), 15L);
-        
-        assertEquals(to10("D"), 13L);
-        assertEquals(to10("14"), 20L);
-        assertEquals(to10("FF"), 255L);
-        
-        // Test fromRoman 
-        assertEquals(fromRoman("V"), 5);
-        assertEquals(fromRoman("IV"), 4);
-        assertEquals(fromRoman("IX"), 9);
-        assertEquals(fromRoman("XIV"), 14);
-        assertEquals(fromRoman("XL"), 40);
-        assertEquals(fromRoman("CD"), 400);
-        assertEquals(fromRoman("CM"), 900);
+    assertEquals(from10(100, 3), 10201L);
+    assertEquals(from10(123, 10), 123L);
+    assertEquals(from10(0, 2), 0L);
+    
+    // Test from10(long) hex 
+    assertEquals(from10(13), string("D"));
+    assertEquals(from10(20), string("14"));
+    assertEquals(from10(255), string("FF"));
+    assertEquals(from10(2748), string("ABC"));
+    assertEquals(from10(43981), string("ABCD"));
+    assertEquals(from10(171), string("AB"));
+    
+    // Test to10 
+    assertEquals(to10(1001, 2), 9L);
+    assertEquals(to10(12, 7), 9L);
+    assertEquals(to10(17, 8), 15L);
+    
+    assertEquals(to10("D"), 13L);
+    assertEquals(to10("14"), 20L);
+    assertEquals(to10("FF"), 255L);
+    
+    // Test fromRoman 
+    assertEquals(fromRoman("V"), 5);
+    assertEquals(fromRoman("IV"), 4);
+    assertEquals(fromRoman("IX"), 9);
+    assertEquals(fromRoman("XIV"), 14);
+    assertEquals(fromRoman("XL"), 40);
+    assertEquals(fromRoman("CD"), 400);
+    assertEquals(fromRoman("CM"), 900);
     
     return 0;
 }
