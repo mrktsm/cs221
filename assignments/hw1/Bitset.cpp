@@ -14,17 +14,7 @@ public:
     unsigned short getValue() {
         return data;
     }
-
-    // prints the value of the bitset as hex number    
-    // note: oct would print the octal version
-    //       dec would print the decimal version
-    //       there is no specifier for binary
-    void print() {
-        cout << hex << data << endl;
-
-        cout << dec;   // should always be the last line in this method to reset to decimal
-    }
-
+    
     bool none() {
         return data == ZERO;
     }
@@ -38,7 +28,7 @@ public:
     }
 
     void flip() {
-        data ^= (unsigned short)(~ZERO);
+        data ^= (~ZERO);
     }
 
     bool get(int index) {
@@ -50,7 +40,7 @@ public:
     }
 
     void set() {
-        data = (unsigned short)(~ZERO);
+        data = ~ZERO;
     }
 
     void set(int index) {
@@ -106,6 +96,34 @@ public:
 
     void clearLast1() {
         data &= (data - 1);
+    }
+
+    int count() {
+        int counter = 0;
+        unsigned short mask = 1;
+        
+        for (int i = 0; i < sizeof(data) * 8; i++) {
+            if (data & mask) {
+                counter++;
+            }
+            mask <<= 1;  // Shift mask to next position
+        }
+        
+        return counter;
+    }
+
+    void printBinary() {
+        cout << "0b";
+        for (int i = sizeof(data) * 8 - 1; i >= 0; i--) {
+            cout << ((data >> i) & 1);
+        }
+    }
+
+    void print() {
+        cout << "[" << dec << data << ", 0x" << hex << data << ", 0" << oct << data << ", ";
+        printBinary();
+        cout << "]" << endl;
+        cout << dec;  
     }
 };
 
@@ -228,7 +246,35 @@ int main() {
     clearTest3.clearLast1();
     assert(clearTest3.getValue() == id(0x0006));
     
-    cout << "All tests passed!" << endl;
+    // Test count()
+    Bitset countTest1(0x0007);  // Binary: 0111, should count 3 bits
+    assert(countTest1.count() == 3);
+    
+    Bitset countTest2(0xFFFF);  // All bits set, should count 16 bits
+    assert(countTest2.count() == 16);
+    
+    Bitset countTest3(0x0000);  // No bits set, should count 0 bits
+    assert(countTest3.count() == 0);
+    
+    Bitset countTest4(0x1010);  // Binary: 0001000000010000, should count 2 bits
+    assert(countTest4.count() == 2);
+    
+    // Test enhanced print() and printBinary() - visual verification
+    cout << "\n=== Testing print methods ===" << endl;
+    
+    Bitset printTest(25);  // Should print [25, 0x19, 031, 0b0000000000011001]
+    cout << "Value 25: ";
+    printTest.print();
+    
+    Bitset printTest2(0xABCD);
+    cout << "Value 0xABCD: ";
+    printTest2.print();
+    
+    cout << "\nBinary only for 25: ";
+    printTest.printBinary();
+    cout << endl;
+    
+    cout << "\nAll tests passed!" << endl;
     
     return 0;
 }
