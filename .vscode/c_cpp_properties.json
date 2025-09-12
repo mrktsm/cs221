@@ -1,16 +1,32 @@
 {
-    "configurations": [
-        {
-            "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "defines": [],
-            "compilerPath": "/bin/g++",
-            "cStandard": "c17",
-            "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": ["${workspaceFolder}/**"],
+      "defines": [],
+      "compilerPath": "/usr/bin/g++",
+      "cStandard": "c17",
+      "cppStandard": "c++11",
+      "intelliSenseMode": "gcc-x64"
+    },
+    {
+      "name": "macOS",
+      "includePath": ["${workspaceFolder}/**"],
+      "defines": [],
+      "compilerPath": "/usr/bin/clang++",
+      "cStandard": "c17",
+      "cppStandard": "c++11",
+      "intelliSenseMode": "clang-x64"
+    },
+    {
+      "name": "macOS-Homebrew",
+      "includePath": ["${workspaceFolder}/**"],
+      "defines": [],
+      "compilerPath": "/opt/homebrew/bin/g++-11",
+      "cStandard": "c17",
+      "cppStandard": "c++11",
+      "intelliSenseMode": "gcc-x64"
+    }
+  ],
+  "version": 4
 }

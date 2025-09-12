@@ -1,5 +1,6 @@
 #include <string>
 #include <map>
+#include <iostream>
 
 using namespace std;
 
@@ -8,7 +9,7 @@ map<char, int> ROMAN_MAP = {
     {'C', 100}, {'D', 500}, {'M', 1000}
 };
 
-string to_string( const string& str ) {
+string to_string(const string& str) {
 	return str;
 }
 
@@ -80,7 +81,8 @@ long getValue(char symbol) {
     }
 }
 
-long to10(string number) {
+// pass string by reference to avoid copying the string like discussed in class
+long to10(const string& number) {
     long result = 0;
 
     int weight = 1;
@@ -93,7 +95,7 @@ long to10(string number) {
     return result;
 }
 
-int fromRoman(string number) {
+int fromRoman(const string& number) {
     int result = 0;
 
     for (int i = 0; i < number.length() - 1; i++) {
