@@ -64,16 +64,16 @@ public:
     }
 
     void swap() {
-        unsigned short shift = 8;
+        unsigned short shift = sizeof(data) * 8 / 2;
 
-        unsigned short left = data << shift;
-        unsigned short right = data >> shift;
+        unsigned short lowToHigh = data << shift;  // Move low byte to high position
+        unsigned short highToLow = data >> shift;  // Move high byte to low position
 
-        data = left | right;
+        data = lowToHigh | highToLow;
     }
 
     void swapHi() {
-        unsigned short highMask = ~ZERO << 8;       
+        unsigned short highMask = ~ZERO << (sizeof(data) * 8 / 2);       
         unsigned short lowByte = data & (~highMask);
         unsigned short highByte = data & highMask;   
         
@@ -82,7 +82,7 @@ public:
     }
 
     void swapLo() {
-        unsigned short highMask = ~ZERO << 8;       
+        unsigned short highMask = ~ZERO << (sizeof(data) * 8 / 2);       
         unsigned short lowByte = data & (~highMask);
         unsigned short highByte = data & highMask;   
 
@@ -132,49 +132,48 @@ unsigned short id(unsigned short value) {
 }
 
 int main() {
-    // Test constructor and getValue
-    Bitset bits1(0xABCD);
-    assert(bits1.getValue() == id(0xABCD));
+    // Basic constructor tests
+    Bitset b1(0xABCD);
+    assert(b1.getValue() == id(0xABCD));
     
-    Bitset bits2(0x0000);
-    assert(bits2.getValue() == id(0x0000));
+    Bitset empty(0x0000);
+    assert(empty.getValue() == id(0x0000));
     
-    Bitset bits3(0xFFFF);
-    assert(bits3.getValue() == id(0xFFFF));
+    Bitset full(0xFFFF);
+    assert(full.getValue() == id(0xFFFF));
+    // Testing none/any/all methods
+    Bitset zeros(0x0000);
+    assert(zeros.none());
+    assert(!zeros.any());
+    assert(!zeros.all());
     
-    // Test none(), any(), all()
-    Bitset allZeros(0x0000);
-    assert(allZeros.none());
-    assert(!allZeros.any());
-    assert(!allZeros.all());
+    Bitset ones(0xFFFF);
+    assert(!ones.none());
+    assert(ones.any());
+    assert(ones.all());
     
-    Bitset allOnes(0xFFFF);
-    assert(!allOnes.none());
-    assert(allOnes.any());
-    assert(allOnes.all());
+    Bitset partial(0x00F0);
+    assert(!partial.none());
+    assert(partial.any());
+    assert(!partial.all());
     
-    Bitset someOnes(0x00F0);
-    assert(!someOnes.none());
-    assert(someOnes.any());
-    assert(!someOnes.all());
+    // Test get method
+    Bitset getBits(0x0005);
+    assert(getBits.get(0));
+    assert(!getBits.get(1));
+    assert(getBits.get(2));
+    assert(!getBits.get(3));
     
-    // Test get()
-    Bitset testGet(0x0005);  // Binary: 0000000000000101
-    assert(testGet.get(0));   // Bit 0 is 1
-    assert(!testGet.get(1));  // Bit 1 is 0
-    assert(testGet.get(2));   // Bit 2 is 1
-    assert(!testGet.get(3));  // Bit 3 is 0
+    // Test set methods
+    Bitset setAll(0x0000);
+    setAll.set();
+    assert(setAll.getValue() == id(0xFFFF));
     
-    // Test set()
-    Bitset testSetAll(0x0000);
-    testSetAll.set();
-    assert(testSetAll.getValue() == id(0xFFFF));
-    
-    Bitset testSetIndex(0x0000);
-    testSetIndex.set(3);
-    assert(testSetIndex.getValue() == id(0x0008));  // Bit 3 set
-    testSetIndex.set(0);
-    assert(testSetIndex.getValue() == id(0x0009));  // Bits 0 and 3 set
+    Bitset setBits(0x0000);
+    setBits.set(3);
+    assert(setBits.getValue() == id(0x0008));
+    setBits.set(0);
+    assert(setBits.getValue() == id(0x0009));
     
     // Test clear()
     Bitset testClearAll(0xFFFF);
@@ -183,95 +182,95 @@ int main() {
     
     Bitset testClearIndex(0xFFFF);
     testClearIndex.clear(3);
-    assert(testClearIndex.getValue() == id(0xFFF7));  // All bits except bit 3
+    assert(testClearIndex.getValue() == id(0xFFF7));
     
     // Test flip()
-    Bitset testFlip(0xAAAA);  // 1010101010101010
+    Bitset testFlip(0xAAAA);
     testFlip.flip();
-    assert(testFlip.getValue() == id(0x5555));  // 0101010101010101
+    assert(testFlip.getValue() == id(0x5555));
     
     // Test swap()
     Bitset testSwap(0xABCD);
     testSwap.swap();
-    assert(testSwap.getValue() == id(0xCDAB));  // Bytes swapped
+    assert(testSwap.getValue() == id(0xCDAB));
     
     // Test swapHi()
-    Bitset testSwapHi(0xABCD);  // AB = 1010 1011, CD unchanged
+    Bitset testSwapHi(0xABCD);
     testSwapHi.swapHi();
-    assert(testSwapHi.getValue() == id(0xBACD));  // BA = 1011 1010
+    assert(testSwapHi.getValue() == id(0xBACD));
     
     // Test swapLo()
-    Bitset testSwapLo(0xABCD);  // AB unchanged, CD = 1100 1101
+    Bitset testSwapLo(0xABCD);
     testSwapLo.swapLo();
-    assert(testSwapLo.getValue() == id(0xABDC));  // DC = 1101 1100
+    assert(testSwapLo.getValue() == id(0xABDC));
     
     // Test isPow2()
-    Bitset pow2Test1(1);     // 2^0
+    Bitset pow2Test1(1);
     assert(pow2Test1.isPow2());
     
-    Bitset pow2Test2(2);     // 2^1
+    Bitset pow2Test2(2);
     assert(pow2Test2.isPow2());
     
-    Bitset pow2Test3(4);     // 2^2
+    Bitset pow2Test3(4);
     assert(pow2Test3.isPow2());
     
-    Bitset pow2Test4(8);     // 2^3
+    Bitset pow2Test4(8);
     assert(pow2Test4.isPow2());
     
-    Bitset pow2Test5(16);    // 2^4
+    Bitset pow2Test5(16);
     assert(pow2Test5.isPow2());
     
-    Bitset notPow2Test1(0);  // 0 is not a power of 2
+    Bitset notPow2Test1(0);
     assert(!notPow2Test1.isPow2());
     
-    Bitset notPow2Test2(3);  // 3 is not a power of 2
+    Bitset notPow2Test2(3);
     assert(!notPow2Test2.isPow2());
     
-    Bitset notPow2Test3(5);  // 5 is not a power of 2
+    Bitset notPow2Test3(5);
     assert(!notPow2Test3.isPow2());
     
-    Bitset notPow2Test4(6);  // 6 is not a power of 2
+    Bitset notPow2Test4(6);
     assert(!notPow2Test4.isPow2());
     
     // Test clearLast1()
-    Bitset clearTest1(0x000C);  // Binary: 1100, should become 1000
+    Bitset clearTest1(0x000C);
     clearTest1.clearLast1();
     assert(clearTest1.getValue() == id(0x0008));
     
-    Bitset clearTest2(0x000A);  // Binary: 1010, should become 1000
+    Bitset clearTest2(0x000A);
     clearTest2.clearLast1();
     assert(clearTest2.getValue() == id(0x0008));
     
-    Bitset clearTest3(0x0007);  // Binary: 0111, should become 0110
+    Bitset clearTest3(0x0007);
     clearTest3.clearLast1();
     assert(clearTest3.getValue() == id(0x0006));
     
     // Test count()
-    Bitset countTest1(0x0007);  // Binary: 0111, should count 3 bits
+    Bitset countTest1(0x0007);
     assert(countTest1.count() == 3);
     
-    Bitset countTest2(0xFFFF);  // All bits set, should count 16 bits
+    Bitset countTest2(0xFFFF);
     assert(countTest2.count() == 16);
     
-    Bitset countTest3(0x0000);  // No bits set, should count 0 bits
+    Bitset countTest3(0x0000);
     assert(countTest3.count() == 0);
     
-    Bitset countTest4(0x1010);  // Binary: 0001000000010000, should count 2 bits
+    Bitset countTest4(0x1010);
     assert(countTest4.count() == 2);
     
-    // Test enhanced print() and printBinary() - visual verification
-    cout << "\n=== Testing print methods ===" << endl;
+    // Print tests
+    cout << "\n=== Testing output methods ===" << endl;
     
-    Bitset printTest(25);  // Should print [25, 0x19, 031, 0b0000000000011001]
+    Bitset test25(25);
     cout << "Value 25: ";
-    printTest.print();
+    test25.print();
     
-    Bitset printTest2(0xABCD);
+    Bitset testHex(0xABCD);
     cout << "Value 0xABCD: ";
-    printTest2.print();
+    testHex.print();
     
-    cout << "\nBinary only for 25: ";
-    printTest.printBinary();
+    cout << "\nBinary for 25: ";
+    test25.printBinary();
     cout << endl;
     
     cout << "\nAll tests passed!" << endl;
