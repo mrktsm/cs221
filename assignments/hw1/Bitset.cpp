@@ -124,7 +124,7 @@ public:
         int counter = 0;
         T mask = ONE;
 
-        for (int i = 0; i < SIZE - 1; i++)
+        for (int i = 0; i < SIZE; i++)
         {
             if (data & mask)
             {
@@ -243,148 +243,96 @@ unsigned short id(unsigned short value)
 
 int main()
 {
-    // Basic constructor tests
-    Bitset b1(0xABCD);
-    assert(b1.getValue() == id(0xABCD));
-
-    Bitset empty(0x0000);
-    assert(empty.getValue() == id(0x0000));
-
-    Bitset full(0xFFFF);
-    assert(full.getValue() == id(0xFFFF));
-    // Testing none/any/all methods
-    Bitset zeros(0x0000);
-    assert(zeros.none());
-    assert(!zeros.any());
-    assert(!zeros.all());
-
-    Bitset ones(0xFFFF);
-    assert(!ones.none());
-    assert(ones.any());
-    assert(ones.all());
-
-    Bitset partial(0x00F0);
-    assert(!partial.none());
-    assert(partial.any());
-    assert(!partial.all());
-
-    // Test get method
-    Bitset getBits(0x0005);
-    assert(getBits.get(0));
-    assert(!getBits.get(1));
-    assert(getBits.get(2));
-    assert(!getBits.get(3));
-
-    // Test set methods
-    Bitset setAll(0x0000);
-    setAll.set();
-    assert(setAll.getValue() == id(0xFFFF));
-
-    Bitset setBits(0x0000);
-    setBits.set(3);
-    assert(setBits.getValue() == id(0x0008));
-    setBits.set(0);
-    assert(setBits.getValue() == id(0x0009));
-
-    // Test clear()
-    Bitset testClearAll(0xFFFF);
-    testClearAll.clear();
-    assert(testClearAll.getValue() == id(0x0000));
-
-    Bitset testClearIndex(0xFFFF);
-    testClearIndex.clear(3);
-    assert(testClearIndex.getValue() == id(0xFFF7));
-
-    // Test flip()
-    Bitset testFlip(0xAAAA);
-    testFlip.flip();
-    assert(testFlip.getValue() == id(0x5555));
-
-    // Test swap()
-    Bitset testSwap(0xABCD);
-    testSwap.swap();
-    assert(testSwap.getValue() == id(0xCDAB));
-
-    // Test swapHi()
-    Bitset testSwapHi(0xABCD);
-    testSwapHi.swapHi();
-    assert(testSwapHi.getValue() == id(0xBACD));
-
-    // Test swapLo()
-    Bitset testSwapLo(0xABCD);
-    testSwapLo.swapLo();
-    assert(testSwapLo.getValue() == id(0xABDC));
-
-    // Test isPow2()
-    Bitset pow2Test1(1);
-    assert(pow2Test1.isPow2());
-
-    Bitset pow2Test2(2);
-    assert(pow2Test2.isPow2());
-
-    Bitset pow2Test3(4);
-    assert(pow2Test3.isPow2());
-
-    Bitset pow2Test4(8);
-    assert(pow2Test4.isPow2());
-
-    Bitset pow2Test5(16);
-    assert(pow2Test5.isPow2());
-
-    Bitset notPow2Test1(0);
-    assert(!notPow2Test1.isPow2());
-
-    Bitset notPow2Test2(3);
-    assert(!notPow2Test2.isPow2());
-
-    Bitset notPow2Test3(5);
-    assert(!notPow2Test3.isPow2());
-
-    Bitset notPow2Test4(6);
-    assert(!notPow2Test4.isPow2());
-
-    // Test clearLast1()
-    Bitset clearTest1(0x000C);
-    clearTest1.clearLast1();
-    assert(clearTest1.getValue() == id(0x0008));
-
-    Bitset clearTest2(0x000A);
-    clearTest2.clearLast1();
-    assert(clearTest2.getValue() == id(0x0008));
-
-    Bitset clearTest3(0x0007);
-    clearTest3.clearLast1();
-    assert(clearTest3.getValue() == id(0x0006));
-
-    // Test count()
-    Bitset countTest1(0x0007);
-    assert(countTest1.count() == 3);
-
-    Bitset countTest2(0xFFFF);
-    assert(countTest2.count() == 16);
-
-    Bitset countTest3(0x0000);
-    assert(countTest3.count() == 0);
-
-    Bitset countTest4(0x1010);
-    assert(countTest4.count() == 2);
-
-    // Print tests
-    cout << "\n=== Testing output methods ===" << endl;
-
-    Bitset test25(25);
-    cout << "Value 25: ";
-    test25.print();
-
-    Bitset testHex(0xABCD);
-    cout << "Value 0xABCD: ";
-    testHex.print();
-
-    cout << "\nBinary for 25: ";
-    test25.printBinary();
-    cout << endl;
-
-    cout << "\nAll tests passed!" << endl;
-
+    cout << "Testing Assignment 2 methods" << endl;
+    
+    // Test with 1-byte bitset
+    Bitset<unsigned char> byte_bitset(0xAB);
+    assert(byte_bitset.any());
+    assert(!byte_bitset.none());
+    assert(!byte_bitset.all());
+    
+    // Test with 8-byte bitset  
+    Bitset<unsigned long long> large_bitset(0xABCDEF0123456789ULL);
+    assert(large_bitset.any());
+    assert(!large_bitset.none());
+    assert(!large_bitset.all());
+    
+    // Test basic methods
+    Bitset<unsigned short> bitset1(0xF0F0);
+    assert(bitset1.count() == 8);
+    assert(bitset1.get(4));
+    assert(!bitset1.get(0));
+    
+    bitset1.flip();
+    assert(bitset1 == Bitset<unsigned short>(0x0F0F));
+    
+    // Test == and != operators
+    cout << "Testing == and != operators" << endl;
+    Bitset<unsigned short> a(0x1234);
+    Bitset<unsigned short> b(0x1234);
+    Bitset<unsigned short> c(0x5678);
+    
+    assert(a == b);
+    assert(!(a == c));
+    assert(a != c);
+    assert(!(a != b));
+    
+    // Test bitwise operators & | ^ ~
+    cout << "Testing bitwise operators" << endl;
+    Bitset<unsigned short> x(0xF0F0);
+    Bitset<unsigned short> y(0xFF00);
+    
+    assert((x & y) == Bitset<unsigned short>(0xF000));
+    assert((x | y) == Bitset<unsigned short>(0xFFF0));
+    assert((x ^ y) == Bitset<unsigned short>(0x0FF0));
+    assert(~x == Bitset<unsigned short>(0x0F0F));
+    
+    // Test shift operators << >>
+    cout << "Testing shift operators" << endl;
+    Bitset<unsigned short> shift_test(0x000F);
+    
+    assert((shift_test << 4) == Bitset<unsigned short>(0x00F0));
+    assert((shift_test >> 2) == Bitset<unsigned short>(0x0003));
+    
+    // Test comparison operators < >=
+    cout << "Testing comparison operators" << endl;
+    Bitset<unsigned short> small(0x0010);
+    Bitset<unsigned short> big(0x0020);
+    
+    assert(small < big);
+    assert(!(big < small));
+    assert(big >= small);
+    assert(small >= small);
+    
+    // Test assignment operators ^= >>=
+    cout << "Testing assignment operators" << endl;
+    Bitset<unsigned short> assign_test(0xAAAA);
+    Bitset<unsigned short> mask(0x00FF);
+    
+    Bitset<unsigned short> result = assign_test ^= mask;
+    assert(assign_test == Bitset<unsigned short>(0xAA55));
+    assert(result == Bitset<unsigned short>(0xAA55));
+    
+    Bitset<unsigned short> assign_test2(0xFF00);
+    Bitset<unsigned short> shift_result = assign_test2 >>= 4;
+    assert(assign_test2 == Bitset<unsigned short>(0x0FF0));
+    assert(shift_result == Bitset<unsigned short>(0x0FF0));
+    
+    // Test prefix increment operator ++
+    cout << "Testing ++ operator" << endl;
+    Bitset<unsigned short> inc_test(25);
+    ++inc_test;
+    assert(inc_test == Bitset<unsigned short>(26));
+    
+    ++(++(++inc_test));
+    assert(inc_test == Bitset<unsigned short>(29));
+    
+    // Test stream output operator <<
+    cout << "Testing << output operator" << endl;
+    Bitset<unsigned short> output_test(25);
+    cout << "Output test: " << output_test << endl;
+    
+    cout << "\nAll Assignment 3 tests passed!" << endl;
+    
     return 0;
 }
