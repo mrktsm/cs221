@@ -3,16 +3,21 @@
 
 using namespace std;
 
+template <typename T>
 class Bitset
 {
 private:
-    const unsigned short ZERO = 0;
-    unsigned short data;
+    const T ZERO = 0;
+    const int SIZE = 8 * sizeof(T);
+    const T ONE = 1;
+    const T ALL_ONES = (T)(~ZERO);
+
+    T data;
 
 public:
-    explicit Bitset(unsigned short theBits) : data(theBits) {}
+    explicit Bitset(T theBits) : data(theBits) {}
 
-    unsigned short getValue()
+    T getValue() const
     {
         return data;
     }
@@ -29,17 +34,17 @@ public:
 
     bool all()
     {
-        return data == (unsigned short)(~ZERO);
+        return data == ALL_ONES;
     }
 
     void flip()
     {
-        data ^= (~ZERO);
+        data ^= ALL_ONES;
     }
 
     bool get(int index)
     {
-        unsigned short mask = 1;
+        T mask = ONE;
 
         mask <<= index;
 
@@ -48,12 +53,12 @@ public:
 
     void set()
     {
-        data = ~ZERO;
+        data = ~ALL_ONES;
     }
 
     void set(int index)
     {
-        unsigned short mask = 1;
+        T mask = ONE;
 
         mask <<= index;
 
@@ -67,7 +72,7 @@ public:
 
     void clear(int index)
     {
-        unsigned short mask = 1;
+        T mask = ONE;
 
         mask <<= index;
 
@@ -76,19 +81,19 @@ public:
 
     void swap()
     {
-        unsigned short shift = sizeof(data) * 8 / 2;
+        T shift = SIZE / 2;
 
-        unsigned short lowToHigh = data << shift; // Move low byte to high position
-        unsigned short highToLow = data >> shift; // Move high byte to low position
+        T lowToHigh = data << shift; // Move low byte to high position
+        T highToLow = data >> shift; // Move high byte to low position
 
         data = lowToHigh | highToLow;
     }
 
     void swapHi()
     {
-        unsigned short highMask = ~ZERO << (sizeof(data) * 8 / 2);
-        unsigned short lowByte = data & (~highMask);
-        unsigned short highByte = data & highMask;
+        T highMask = ~ALL_ONES << SIZE / 2;
+        T lowByte = data & (~highMask);
+        T highByte = data & highMask;
 
         // Swap nibbles
         data = ((highByte >> 4) | (highByte << 4)) & highMask | lowByte;
@@ -96,9 +101,9 @@ public:
 
     void swapLo()
     {
-        unsigned short highMask = ~ZERO << (sizeof(data) * 8 / 2);
-        unsigned short lowByte = data & (~highMask);
-        unsigned short highByte = data & highMask;
+        T highMask = ~ALL_ONES << SIZE / 2;
+        T lowByte = data & (~highMask);
+        T highByte = data & highMask;
 
         data = highByte | ((lowByte >> 4) | (lowByte << 4)) & (~highMask);
     }
@@ -117,9 +122,9 @@ public:
     int count()
     {
         int counter = 0;
-        unsigned short mask = 1;
+        T mask = ONE;
 
-        for (int i = 0; i < sizeof(data) * 8; i++)
+        for (int i = 0; i < SIZE - 1; i++)
         {
             if (data & mask)
             {
@@ -134,7 +139,7 @@ public:
     void printBinary()
     {
         cout << "0b";
-        for (int i = sizeof(data) * 8 - 1; i >= 0; i--)
+        for (int i = SIZE - 1; i >= 0; i--)
         {
             cout << ((data >> i) & 1);
         }
@@ -147,7 +152,89 @@ public:
         cout << "]" << endl;
         cout << dec;
     }
+
+    bool operator==(const Bitset<T>& other) const {
+        return data == other.getValue();
+    }
+
+    Bitset<T> operator&(const Bitset<T>& other) const {
+        T value = data & other.getValue();
+        return Bitset<T>(value);
+    }
+
+    Bitset<T> operator~() const {
+        T value = (T)(~data);
+        return Bitset<T>(value);
+    }
+
+    Bitset<T> operator<<(int shift) const {
+        T value = data << shift;
+        return Bitset<T>(value);
+    }
+
+    bool operator<(const Bitset<T>& other) const {
+        return data < other.getValue();
+    }
+
+    Bitset<T>& operator^=(const Bitset<T>& other) {
+        data ^= other.getValue();
+        return *this;
+    }
+
+    Bitset<T>& operator>>=(int shift) {
+        data >>= shift;
+        return *this;
+    }
+
+    Bitset<T>& operator++() {
+        data++;
+        return *this;
+    }
 };
+
+template <typename T>
+bool operator!=(const Bitset<T>& a, const Bitset<T>& b) {
+    return !(a == b);
+}
+
+template <typename T>
+Bitset<T> operator|(const Bitset<T>& a, const Bitset<T>& b) {
+    T result = (T)(~((~a.getValue()) & (~b.getValue())));
+    return Bitset<T>(result);
+}
+
+template <typename T>
+Bitset<T> operator^(const Bitset<T>& a, const Bitset<T>& b) {
+    T value = a.getValue() ^ b.getValue();
+    return Bitset<T>(value);
+}
+
+template <typename T>
+ostream& operator<<(ostream& os, const Bitset<T>& bitset) {
+    T data = bitset.getValue();
+    os << '[' << dec << data 
+       << ", 0x" << hex << data 
+       << ", 0" << oct << data << ']';
+    os << dec;  // restore dec
+    return os;
+}
+
+// template <typename T>
+// Bitset<T> operator~(const Bitset<T>& bitset) {
+//     T value = (T)(~bitset.getValue());
+//     return Bitset<T>(value);
+// }
+
+template <typename T>
+Bitset<T> operator>>(const Bitset<T>& bitset, int shift) {
+    T value = bitset.getValue() >> shift;
+    return Bitset<T>(value);
+}
+
+template <typename T>
+bool operator>=(const Bitset<T>& a, const Bitset<T>& b) {
+    return !(a < b);
+}
 
 unsigned short id(unsigned short value)
 {

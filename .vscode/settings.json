@@ -1,4 +1,5 @@
 {
+  "editor.formatOnSave": true,
   "files.associations": {
     "*css": "tailwindcss",
     "string": "cpp",
@@ -40,6 +41,8 @@
     "tuple": "cpp",
     "typeinfo": "cpp",
     "variant": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "array": "cpp",
+    "vector": "cpp"
   }
 }
