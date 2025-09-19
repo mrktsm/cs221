@@ -10,7 +10,7 @@ private:
     const T ZERO = 0;
     const int SIZE = 8 * sizeof(T);
     const T ONE = 1;
-    const T ALL_ONES = (T)(~ZERO);
+    const T ALL_ONES = ~ZERO;
 
     T data;
 
@@ -22,17 +22,17 @@ public:
         return data;
     }
 
-    bool none()
+    bool none() const
     {
         return data == ZERO;
     }
 
-    bool any()
+    bool any() const
     {
         return !none();
     }
 
-    bool all()
+    bool all() const
     {
         return data == ALL_ONES;
     }
@@ -42,7 +42,7 @@ public:
         data ^= ALL_ONES;
     }
 
-    bool get(int index)
+    bool get(int index) const
     {
         T mask = ONE;
 
@@ -53,7 +53,7 @@ public:
 
     void set()
     {
-        data = ~ALL_ONES;
+        data = ALL_ONES;
     }
 
     void set(int index)
@@ -91,7 +91,7 @@ public:
 
     void swapHi()
     {
-        T highMask = ~ALL_ONES << SIZE / 2;
+        T highMask = ALL_ONES << SIZE / 2;
         T lowByte = data & (~highMask);
         T highByte = data & highMask;
 
@@ -101,7 +101,7 @@ public:
 
     void swapLo()
     {
-        T highMask = ~ALL_ONES << SIZE / 2;
+        T highMask = ALL_ONES << SIZE / 2;
         T lowByte = data & (~highMask);
         T highByte = data & highMask;
 
@@ -163,7 +163,7 @@ public:
     }
 
     Bitset<T> operator~() const {
-        T value = (T)(~data);
+        T value = ~data;
         return Bitset<T>(value);
     }
 
@@ -199,7 +199,7 @@ bool operator!=(const Bitset<T>& a, const Bitset<T>& b) {
 
 template <typename T>
 Bitset<T> operator|(const Bitset<T>& a, const Bitset<T>& b) {
-    T result = (T)(~((~a.getValue()) & (~b.getValue())));
+    T result = (~((~a.getValue()) & (~b.getValue())));
     return Bitset<T>(result);
 }
 
@@ -221,7 +221,7 @@ ostream& operator<<(ostream& os, const Bitset<T>& bitset) {
 
 // template <typename T>
 // Bitset<T> operator~(const Bitset<T>& bitset) {
-//     T value = (T)(~bitset.getValue());
+//     T value = (~bitset.getValue());
 //     return Bitset<T>(value);
 // }
 
@@ -236,15 +236,9 @@ bool operator>=(const Bitset<T>& a, const Bitset<T>& b) {
     return !(a < b);
 }
 
-unsigned short id(unsigned short value)
-{
-    return value;
-}
 
 int main()
 {
-    cout << "Testing Assignment 2 methods" << endl;
-    
     // Test with 1-byte bitset
     Bitset<unsigned char> byte_bitset(0xAB);
     assert(byte_bitset.any());
@@ -257,7 +251,7 @@ int main()
     assert(!large_bitset.none());
     assert(!large_bitset.all());
     
-    // Test basic methods
+    // Test basic Assignment 2 methods
     Bitset<unsigned short> bitset1(0xF0F0);
     assert(bitset1.count() == 8);
     assert(bitset1.get(4));
@@ -267,7 +261,6 @@ int main()
     assert(bitset1 == Bitset<unsigned short>(0x0F0F));
     
     // Test == and != operators
-    cout << "Testing == and != operators" << endl;
     Bitset<unsigned short> a(0x1234);
     Bitset<unsigned short> b(0x1234);
     Bitset<unsigned short> c(0x5678);
@@ -278,7 +271,6 @@ int main()
     assert(!(a != b));
     
     // Test bitwise operators & | ^ ~
-    cout << "Testing bitwise operators" << endl;
     Bitset<unsigned short> x(0xF0F0);
     Bitset<unsigned short> y(0xFF00);
     
@@ -288,14 +280,12 @@ int main()
     assert(~x == Bitset<unsigned short>(0x0F0F));
     
     // Test shift operators << >>
-    cout << "Testing shift operators" << endl;
     Bitset<unsigned short> shift_test(0x000F);
     
     assert((shift_test << 4) == Bitset<unsigned short>(0x00F0));
     assert((shift_test >> 2) == Bitset<unsigned short>(0x0003));
     
     // Test comparison operators < >=
-    cout << "Testing comparison operators" << endl;
     Bitset<unsigned short> small(0x0010);
     Bitset<unsigned short> big(0x0020);
     
@@ -305,7 +295,6 @@ int main()
     assert(small >= small);
     
     // Test assignment operators ^= >>=
-    cout << "Testing assignment operators" << endl;
     Bitset<unsigned short> assign_test(0xAAAA);
     Bitset<unsigned short> mask(0x00FF);
     
@@ -319,7 +308,6 @@ int main()
     assert(shift_result == Bitset<unsigned short>(0x0FF0));
     
     // Test prefix increment operator ++
-    cout << "Testing ++ operator" << endl;
     Bitset<unsigned short> inc_test(25);
     ++inc_test;
     assert(inc_test == Bitset<unsigned short>(26));
@@ -328,11 +316,8 @@ int main()
     assert(inc_test == Bitset<unsigned short>(29));
     
     // Test stream output operator <<
-    cout << "Testing << output operator" << endl;
     Bitset<unsigned short> output_test(25);
     cout << "Output test: " << output_test << endl;
-    
-    cout << "\nAll Assignment 3 tests passed!" << endl;
     
     return 0;
 }
