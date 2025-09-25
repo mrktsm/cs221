@@ -1,7 +1,7 @@
 load Xor.hdl,
 output-file Xor.out,
 compare-to Xor.cmp,
-output-list a%B3.1.3 b%B3.1.3 out%B3.1.3;
+output-list a%B2.1.2 b%B2.1.2 out%B2.1.2;
 
 set a 0,
 set b 0,

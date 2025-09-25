@@ -1,7 +1,7 @@
 load Mux16.hdl,
 output-file Mux16.out,
 compare-to Mux16.cmp,
-output-list a%B1.16.1 b%B1.16.1 sel%B3.1.3 out%B1.16.1;
+output-list a%B1.16.1 b%B1.16.1 sel%B2.1.2 out%B1.16.1;
 
 set a %B0000000000000000,
 set b %B0000000000000000,
