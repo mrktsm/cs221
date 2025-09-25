@@ -3,8 +3,8 @@ CHIP Xor {
     OUT out;
 
     PARTS:
-    Nand(a=a, b=b, out=nandAB);
-    Nand(a=a, b=nandAB, out=nandA_nandAB);
-    Nand(a=b, b=nandAB, out=nandB_nandAB);
-    Nand(a=nandA_nandAB, b=nandB_nandAB, out=out);
+    Nand(a=a, b=b, out=nand1);
+    Nand(a=a, b=nand1, out=nand2);
+    Nand(a=b, b=nand1, out=nand3);
+    Nand(a=nand2, b=nand3, out=out);
 }
