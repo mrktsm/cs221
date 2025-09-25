@@ -1,0 +1,11 @@
+CHIP Extender16 {
+    IN in;
+    OUT out[16];
+
+    PARTS:
+    // Copy the input bit to all 16 output positions
+    // We can use the hint by creating a 16-bit bus where all bits equal 'in'
+    Not16(in[0]=in, in[1]=in, in[2]=in, in[3]=in, in[4]=in, in[5]=in, in[6]=in, in[7]=in, 
+          in[8]=in, in[9]=in, in[10]=in, in[11]=in, in[12]=in, in[13]=in, in[14]=in, in[15]=in, out=notAll);
+    Not16(in=notAll, out=out);
+}

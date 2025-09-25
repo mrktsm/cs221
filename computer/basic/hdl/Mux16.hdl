@@ -1,0 +1,11 @@
+CHIP Mux16 {
+    IN a[16], b[16], sel;
+    OUT out[16];
+
+    PARTS:
+    Extender16(in=sel, out=sel16);
+    Not16(in=sel16, out=notSel16);
+    And16(a=a, b=notSel16, out=aAndNotSel);
+    And16(a=b, b=sel16, out=bAndSel);
+    Or16(a=aAndNotSel, b=bAndSel, out=out);
+}
