@@ -1,0 +1,25 @@
+// opcode meanings:
+// 000 = no jump
+// 001 = BGT (Branch if Greater Than) - positive
+// 010 = BEQ (Branch if Equal) - zero
+// 011 = BGE (Branch if Greater or Equal) - not negative
+// 100 = BLT (Branch if Less Than) - negative
+// 101 = BNE (Branch if Not Equal) - not zero
+// 110 = BLE (Branch if Less or Equal) - negative or zero
+// 111 = BAL (Branch Always)
+
+CHIP Jumper {
+    IN zr, ng, opcode[3];
+    OUT jump;
+
+    PARTS:
+    Not(in=zr, out=notzr);
+    Not(in=ng, out=notng);
+    And(a=notzr, b=notng, out=positive);
+    Or(a=ng, b=zr, out=negorzero);
+    
+    Mux8Way(a=false, b=positive, c=zr, d=notng, 
+            e=ng, f=notzr, g=negorzero, h=true, 
+            sel=opcode, out=jump);
+}
+
