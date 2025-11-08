@@ -1,0 +1,17 @@
+CHIP Loader {
+    IN  d1,
+        d2,
+        d3,
+        ctype;
+
+    OUT loadA,
+        loadD,
+        loadM;
+
+    PARTS:
+    // only load on C-instructions when dest bit is set
+    And(a=ctype, b=d1, out=loadA);
+    And(a=ctype, b=d2, out=loadD);
+    And(a=ctype, b=d3, out=loadM);
+}
+
